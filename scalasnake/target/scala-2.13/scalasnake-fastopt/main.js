@@ -1321,13 +1321,6 @@ function $p_Lorg_scalajs_dom_package$__window$lzycompute__Lorg_scalajs_dom_raw_W
   };
   return $thiz.Lorg_scalajs_dom_package$__f_window
 }
-function $p_Lorg_scalajs_dom_package$__document$lzycompute__Lorg_scalajs_dom_raw_HTMLDocument($thiz) {
-  if (((67108864 & $thiz.Lorg_scalajs_dom_package$__f_bitmap$0) === 0)) {
-    $thiz.Lorg_scalajs_dom_package$__f_document = $thiz.window__Lorg_scalajs_dom_raw_Window().document;
-    $thiz.Lorg_scalajs_dom_package$__f_bitmap$0 = (67108864 | $thiz.Lorg_scalajs_dom_package$__f_bitmap$0)
-  };
-  return $thiz.Lorg_scalajs_dom_package$__f_document
-}
 /** @constructor */
 function $c_Lorg_scalajs_dom_package$() {
   this.Lorg_scalajs_dom_package$__f_ApplicationCache = null;
@@ -1369,9 +1362,6 @@ function $h_Lorg_scalajs_dom_package$() {
 $h_Lorg_scalajs_dom_package$.prototype = $c_Lorg_scalajs_dom_package$.prototype;
 $c_Lorg_scalajs_dom_package$.prototype.window__Lorg_scalajs_dom_raw_Window = (function() {
   return (((33554432 & this.Lorg_scalajs_dom_package$__f_bitmap$0) === 0) ? $p_Lorg_scalajs_dom_package$__window$lzycompute__Lorg_scalajs_dom_raw_Window(this) : this.Lorg_scalajs_dom_package$__f_window)
-});
-$c_Lorg_scalajs_dom_package$.prototype.document__Lorg_scalajs_dom_raw_HTMLDocument = (function() {
-  return (((67108864 & this.Lorg_scalajs_dom_package$__f_bitmap$0) === 0) ? $p_Lorg_scalajs_dom_package$__document$lzycompute__Lorg_scalajs_dom_raw_HTMLDocument(this) : this.Lorg_scalajs_dom_package$__f_document)
 });
 var $d_Lorg_scalajs_dom_package$ = new $TypeData().initClass({
   Lorg_scalajs_dom_package$: 0
@@ -3873,6 +3863,10 @@ function $c_LMain$() {
   this.LMain$__f_ROWS = 0;
   this.LMain$__f_COLS = 0;
   this.LMain$__f_grid = null;
+  this.LMain$__f_canvas = null;
+  this.LMain$__f_ctx = null;
+  this.LMain$__f_prev = 0.0;
+  this.LMain$__f_gameLoop = null;
   this.LMain$__f_executionStart = $L0;
   this.LMain$__f_scala$App$$_args = null;
   this.LMain$__f_scala$App$$initCode = null;
@@ -3892,30 +3886,22 @@ $h_LMain$.prototype = $c_LMain$.prototype;
 $c_LMain$.prototype.addClickedMessage__V = (function() {
   $m_s_Console$().print__O__V("clicked")
 });
-$c_LMain$.prototype.createCanvas__V = (function() {
-  var canvas = $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().createElement("canvas");
-  var ctx = canvas.getContext("2d");
-  canvas.width = $doubleToInt((0.95 * $uD($m_Lorg_scalajs_dom_package$().window__Lorg_scalajs_dom_raw_Window().innerWidth)));
-  canvas.height = $doubleToInt((0.95 * $uD($m_Lorg_scalajs_dom_package$().window__Lorg_scalajs_dom_raw_Window().innerHeight)));
-  $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.appendChild(canvas);
-  ctx.beginPath();
-  ctx.rect(20.0, 20.0, 150.0, 100.0);
-  ctx.stroke()
+$c_LMain$.prototype.render__V = (function() {
+  this.LMain$__f_ctx.clearRect(0.0, 0.0, $uI(this.LMain$__f_canvas.width), $uI(this.LMain$__f_canvas.height))
 });
 $c_LMain$.prototype.delayedEndpoint$Main$1__V = (function() {
   this.LMain$__f_ROWS = 10;
   this.LMain$__f_COLS = 10;
   var n1 = this.LMain$__f_ROWS;
   var n2 = this.LMain$__f_COLS;
-  $m_s_reflect_ManifestFactory$BooleanManifest$();
-  var arr = new ($d_Z.getArrayOf().getArrayOf().constr)(n1);
+  var arr = new ($d_jl_Integer.getArrayOf().getArrayOf().constr)(n1);
   var isEmpty = (n1 <= 0);
   var scala$collection$immutable$Range$$lastElement = (((-1) + n1) | 0);
   if ((!isEmpty)) {
     var i = 0;
     while (true) {
       var v1 = i;
-      arr.set(v1, new $ac_Z(n2));
+      arr.set(v1, new ($d_jl_Integer.getArrayOf().constr)(n2));
       if ((i === scala$collection$immutable$Range$$lastElement)) {
         break
       };
@@ -3923,7 +3909,17 @@ $c_LMain$.prototype.delayedEndpoint$Main$1__V = (function() {
     }
   };
   this.LMain$__f_grid = arr;
-  this.createCanvas__V()
+  this.LMain$__f_canvas = null;
+  this.LMain$__f_ctx = null;
+  this.LMain$__f_prev = $uD(Date.now());
+  this.LMain$__f_gameLoop = new $c_sjsr_AnonFunction0(((this$11) => (() => {
+    var now = $uD(Date.now());
+    $m_LMain$();
+    $m_LMain$();
+    $m_LMain$().render__V();
+    $m_LMain$().LMain$__f_prev = now
+  }))(this));
+  $m_Lorg_scalajs_dom_package$().window__Lorg_scalajs_dom_raw_Window().setInterval($m_sjs_js_Any$().fromFunction0__F0__sjs_js_Function0(this.LMain$__f_gameLoop), 1.0)
 });
 var $d_LMain$ = new $TypeData().initClass({
   LMain$: 0
@@ -4365,6 +4361,36 @@ var $d_sr_Nothing$ = new $TypeData().initClass({
   O: 1,
   Ljava_io_Serializable: 1
 });
+/** @constructor */
+function $c_sjs_js_Any$() {
+  /*<skip>*/
+}
+$c_sjs_js_Any$.prototype = new $h_O();
+$c_sjs_js_Any$.prototype.constructor = $c_sjs_js_Any$;
+/** @constructor */
+function $h_sjs_js_Any$() {
+  /*<skip>*/
+}
+$h_sjs_js_Any$.prototype = $c_sjs_js_Any$.prototype;
+$c_sjs_js_Any$.prototype.fromFunction0__F0__sjs_js_Function0 = (function(f) {
+  return ((f$1) => (() => f$1.apply__O()))(f)
+});
+var $d_sjs_js_Any$ = new $TypeData().initClass({
+  sjs_js_Any$: 0
+}, false, "scala.scalajs.js.Any$", {
+  sjs_js_Any$: 1,
+  O: 1,
+  sjs_js_LowPrioAnyImplicits: 1,
+  sjs_js_LowestPrioAnyImplicits: 1
+});
+$c_sjs_js_Any$.prototype.$classData = $d_sjs_js_Any$;
+var $n_sjs_js_Any$;
+function $m_sjs_js_Any$() {
+  if ((!$n_sjs_js_Any$)) {
+    $n_sjs_js_Any$ = new $c_sjs_js_Any$()
+  };
+  return $n_sjs_js_Any$
+}
 /** @constructor */
 function $c_sjsr_AnonFunction0(f) {
   this.sjsr_AnonFunction0__f_f = null;
