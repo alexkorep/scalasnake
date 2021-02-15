@@ -4,6 +4,7 @@ import org.scalajs.dom.html.Canvas
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportTopLevel
 import scala.util.Random
+import scala.math.min
 
 object Main extends App {
   val ROWS = 10
@@ -36,8 +37,10 @@ object Main extends App {
   def createCanvas = () => {
     canvas = dom.document.createElement("canvas").asInstanceOf[Canvas]
     ctx = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
-    canvas.width = (0.95 * dom.window.innerWidth).toInt
-    canvas.height = (0.95 * dom.window.innerHeight).toInt
+    val size = min((0.95 * dom.window.innerWidth).toInt, 
+      (0.95 * dom.window.innerHeight).toInt)
+    canvas.width = size
+    canvas.height = size
     dom.document.body.appendChild(canvas)
     dom.document.body.onmousedown = { (e: dom.MouseEvent) =>
       aiming = true
@@ -132,17 +135,19 @@ object Main extends App {
 
   // Draw everything
   def render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    for (segment <- segments) {
-      segment.draw(ctx, "#E4AB91")
-    }
+    ctx.fillStyle = "#BBB09E";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    rabbit.draw(ctx, "#739A8B")
 
     if (aiming) {
       var newPoint: Point = getAimingPoint()
-      newPoint.draw(ctx, "#F9849A")
+      newPoint.draw(ctx, "#E4AB91")
     }
     
-    rabbit.draw(ctx, "#739A8B")
+    for (segment <- segments) {
+      segment.draw(ctx, "#F9849A")
+    }
   }
 
   def newGame = () => {
