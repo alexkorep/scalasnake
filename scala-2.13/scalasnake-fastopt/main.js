@@ -4152,8 +4152,11 @@ $c_LMain$.prototype.createCanvas__F0 = (function() {
   return new $c_sjsr_AnonFunction0(((this$1) => (() => {
     $m_LMain$().LMain$__f_canvas = $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().createElement("canvas");
     $m_LMain$().LMain$__f_ctx = $m_LMain$().LMain$__f_canvas.getContext("2d");
-    $m_LMain$().LMain$__f_canvas.width = $doubleToInt((0.95 * $uD($m_Lorg_scalajs_dom_package$().window__Lorg_scalajs_dom_raw_Window().innerWidth)));
-    $m_LMain$().LMain$__f_canvas.height = $doubleToInt((0.95 * $uD($m_Lorg_scalajs_dom_package$().window__Lorg_scalajs_dom_raw_Window().innerHeight)));
+    var x = $doubleToInt((0.95 * $uD($m_Lorg_scalajs_dom_package$().window__Lorg_scalajs_dom_raw_Window().innerWidth)));
+    var y = $doubleToInt((0.95 * $uD($m_Lorg_scalajs_dom_package$().window__Lorg_scalajs_dom_raw_Window().innerHeight)));
+    var size = ((x < y) ? x : y);
+    $m_LMain$().LMain$__f_canvas.width = size;
+    $m_LMain$().LMain$__f_canvas.height = size;
     $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.appendChild($m_LMain$().LMain$__f_canvas);
     $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.onmousedown = ((arg1$2) => {
       $m_LMain$();
@@ -4312,11 +4315,17 @@ $c_LMain$.prototype.aboutToEatRabbit__Z = (function() {
   return false
 });
 $c_LMain$.prototype.render__V = (function() {
-  this.LMain$__f_ctx.clearRect(0.0, 0.0, $uI(this.LMain$__f_canvas.width), $uI(this.LMain$__f_canvas.height));
+  this.LMain$__f_ctx.fillStyle = "#BBB09E";
+  this.LMain$__f_ctx.fillRect(0.0, 0.0, $uI(this.LMain$__f_canvas.width), $uI(this.LMain$__f_canvas.height));
+  this.LMain$__f_rabbit.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#739A8B");
+  if (this.LMain$__f_aiming) {
+    var newPoint = $as_LMain$Point(this.LMain$__f_getAimingPoint.apply__O());
+    newPoint.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#E4AB91")
+  };
   var xs = this.LMain$__f_segments;
-  var f = ((this$2) => ((segment$2) => {
+  var f = ((this$3) => ((segment$2) => {
     var segment = $as_LMain$Point(segment$2);
-    segment.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V($m_LMain$().LMain$__f_ctx, "#E4AB91")
+    segment.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V($m_LMain$().LMain$__f_ctx, "#F9849A")
   }))(this);
   var len = xs.u.length;
   var i = 0;
@@ -4386,12 +4395,7 @@ $c_LMain$.prototype.render__V = (function() {
     }
   } else {
     throw new $c_s_MatchError(xs)
-  };
-  if (this.LMain$__f_aiming) {
-    var newPoint = $as_LMain$Point(this.LMain$__f_getAimingPoint.apply__O());
-    newPoint.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#F9849A")
-  };
-  this.LMain$__f_rabbit.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#739A8B")
+  }
 });
 $c_LMain$.prototype.newGame__F0 = (function() {
   return new $c_sjsr_AnonFunction0(((this$1) => (() => {
