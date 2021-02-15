@@ -10,14 +10,14 @@ object Main extends App {
   val COLS = 10
 
   class Point(var x: Int, var y: Int) {
-    def draw(ctx: dom.CanvasRenderingContext2D): Unit = {
+    def draw(ctx: dom.CanvasRenderingContext2D, color: String): Unit = {
       val SEGMENT_SIZE = .6
       ctx.beginPath()
       val rowWidth = canvas.width/COLS
       val rowHeight = canvas.height/ROWS
       ctx.arc(rowWidth*(x + 0.5), rowHeight*(y + .5), 
         rowWidth*SEGMENT_SIZE, 0, 2 * Math.PI)
-      ctx.fillStyle = "#2a9d8f";
+      ctx.fillStyle = color
       ctx.fill()
     }
   }
@@ -26,11 +26,7 @@ object Main extends App {
   var ctx: dom.CanvasRenderingContext2D = null
   var segments:Array[Point] = null
   var dir = 0 // 0-up, 1-left, 2-down, 3-right
-
-  @JSExportTopLevel("onBodyClicked")
-  def addClickedMessage(): Unit = {
-    print("clicked")
-  }
+  var aiming = false
 
   def createCanvas = () => {
     canvas = dom.document.createElement("canvas").asInstanceOf[Canvas]
@@ -38,10 +34,25 @@ object Main extends App {
     canvas.width = (0.95 * dom.window.innerWidth).toInt
     canvas.height = (0.95 * dom.window.innerHeight).toInt
     dom.document.body.appendChild(canvas)
-
-    ctx.beginPath()
-    ctx.rect(20, 20, 150, 100)
-    ctx.stroke()
+    dom.document.body.onmousedown = { (e: dom.MouseEvent) =>
+      aiming = true
+    }
+    // dom.document.body.ontouchstart = { (e: dom.TouchEvent) =>
+    //   aiming = true
+    // }
+    canvas.addEventListener("touchstart", { (e0: dom.TouchEvent) => 
+      aiming = true
+      e0.preventDefault()
+      false
+    }, false)
+    dom.document.body.onmouseup = { (e: dom.MouseEvent) =>
+      aiming = false
+    }
+    canvas.addEventListener("touchend", { (e0: dom.TouchEvent) => 
+      aiming = false
+      e0.preventDefault()
+      false
+    }, false)
   }
 
   val checkGameOver = (newPoint: Point) => {
@@ -49,8 +60,7 @@ object Main extends App {
       newPoint.x > COLS - 1 || newPoint.y > ROWS - 1
   }
 
-  // Update game objects
-  def update() {
+  val getAimingPoint = () => {
     val head = segments(0)
     var newPoint: Point = null
     dir match {
@@ -59,13 +69,25 @@ object Main extends App {
       case 2 => newPoint = new Point(head.x, head.y + 1)
       case 3 => newPoint = new Point(head.x + 1, head.y)
     }
-    if (checkGameOver(newPoint)) {
-      newGame()
-    } else {
-      segments = newPoint +: segments
-      segments = segments.dropRight(1)
-    }
+    newPoint
+  }
 
+  // Update game objects
+  def update() {
+    if (aiming) {
+      dir = dir + 1
+      if (dir > 3) {
+        dir = 0
+      }
+    } else {
+      var newPoint: Point = getAimingPoint()
+      if (checkGameOver(newPoint)) {
+        newGame()
+      } else {
+        segments = newPoint +: segments
+        segments = segments.dropRight(1)
+      }
+    }
 
     // val modif = (hero.speed * modifier).toInt
     // var Position(x, y) = hero.pos
@@ -90,13 +112,19 @@ object Main extends App {
   def render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     for (segment <- segments) {
-      segment.draw(ctx)
+      segment.draw(ctx, "#937A7E")
+    }
+
+    if (aiming) {
+      var newPoint: Point = getAimingPoint()
+      newPoint.draw(ctx, "#AFC4BD")
     }
   }
 
   def newGame = () => {
     segments = new Array[Point](1)
     segments(0) = new Point(COLS/2, ROWS/2)
+    dir = 0
   }
 
   var prev = js.Date.now()
