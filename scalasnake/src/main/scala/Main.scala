@@ -8,33 +8,28 @@ import scala.scalajs.js.annotation.JSExportTopLevel
 object Main extends App {
   val ROWS = 10
   val COLS = 10
-  val grid = Array.ofDim[Integer](ROWS, COLS)
+
+  class Point(var x: Int, var y: Int) {
+    def draw(ctx: dom.CanvasRenderingContext2D): Unit = {
+      val SEGMENT_SIZE = .6
+      ctx.beginPath()
+      val rowWidth = canvas.width/COLS
+      val rowHeight = canvas.height/ROWS
+      ctx.arc(rowWidth*(x + 0.5), rowHeight*(y + .5), 
+        rowWidth*SEGMENT_SIZE, 0, 2 * Math.PI)
+      ctx.fillStyle = "#2a9d8f";
+      ctx.fill()
+    }
+  }
+
   var canvas: Canvas = null
   var ctx: dom.CanvasRenderingContext2D = null
-
-  // def appendPar(targetNode: dom.Node, text: String): Unit = {
-  //   val parNode = document.createElement("p")
-  //   parNode.textContent = text
-  //   targetNode.appendChild(parNode)
-  // }
-
+  var segments:Array[Point] = null
+  var dir = 0 // 0-up, 1-left, 2-down, 3-right
 
   @JSExportTopLevel("onBodyClicked")
   def addClickedMessage(): Unit = {
-    // appendPar(document.body, "You clicked the button!")
     print("clicked")
-  }
-
-  def initGrid(): Unit = {
-    for {
-      i <- 0 until ROWS
-      j <- 0 until COLS
-    } {
-      grid(i)(j) = 0
-    }
-    // for {
-    //   i <- 0 until ROWS
-    // } appendRow(document.body)
   }
 
   def createCanvas = () => {
@@ -49,8 +44,29 @@ object Main extends App {
     ctx.stroke()
   }
 
+  val checkGameOver = (newPoint: Point) => {
+    newPoint.x < 0 || newPoint.y < 0 || 
+      newPoint.x > COLS - 1 || newPoint.y > ROWS - 1
+  }
+
   // Update game objects
-  def update(modifier: Double) {
+  def update() {
+    val head = segments(0)
+    var newPoint: Point = null
+    dir match {
+      case 0 => newPoint = new Point(head.x, head.y - 1)
+      case 1 => newPoint = new Point(head.x - 1, head.y)
+      case 2 => newPoint = new Point(head.x, head.y + 1)
+      case 3 => newPoint = new Point(head.x + 1, head.y)
+    }
+    if (checkGameOver(newPoint)) {
+      newGame()
+    } else {
+      segments = newPoint +: segments
+      segments = segments.dropRight(1)
+    }
+
+
     // val modif = (hero.speed * modifier).toInt
     // var Position(x, y) = hero.pos
     // if (keysDown.contains(KeyCode.Left))  x -= modif
@@ -72,31 +88,15 @@ object Main extends App {
 
   // Draw everything
   def render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // if (bgImage.isReady) {
-    //   ctx.drawImage(bgImage.element, 0, 0, canvas.width, canvas.height)
-    // }
-    // if (heroImage.isReady) {
-    //   ctx.drawImage(heroImage.element, hero.pos.x, hero.pos.y)
-    // }
-    // if (monsterImage.isReady) {
-    //   ctx.drawImage(monsterImage.element, monster.pos.x, monster.pos.y)
-    // }
-
-    // // Score
-    // ctx.fillStyle = "rgb(250, 250, 250)"
-    // ctx.font = "24px Helvetica"
-    // ctx.textAlign = "left"
-    // ctx.textBaseline = "top"
-    // ctx.fillText("Goblins caught: " + monstersCaught, 32, 32)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    for (segment <- segments) {
+      segment.draw(ctx)
+    }
   }
 
-  // println("Hello, World!")
-  // appendPar(document.body, "Hello World")
-  // initGrid()
   def newGame = () => {
-    createCanvas()
+    segments = new Array[Point](1)
+    segments(0) = new Point(COLS/2, ROWS/2)
   }
 
   var prev = js.Date.now()
@@ -104,12 +104,15 @@ object Main extends App {
   val gameLoop = () => {
     val now = js.Date.now()
     val delta = now - prev
-    update(delta / 1000)
-    render()
-    prev = now
+    if (delta >= 1000) {
+      update()
+      render()
+      prev = now
+    }
   }
 
   // Let's play this game!
+  createCanvas()
+  newGame()
   dom.window.setInterval(gameLoop, 1) // Execute as fast as possible
 }
-
