@@ -3,11 +3,13 @@ import org.scalajs.dom.document
 import org.scalajs.dom.html.Canvas
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportTopLevel
-
+import scala.util.Random
 
 object Main extends App {
   val ROWS = 10
   val COLS = 10
+  val SPEED_RATIO = 0.95
+  val INITIAL_SPEED = 1000
 
   class Point(var x: Int, var y: Int) {
     def draw(ctx: dom.CanvasRenderingContext2D, color: String): Unit = {
@@ -27,6 +29,9 @@ object Main extends App {
   var segments:Array[Point] = null
   var dir = 0 // 0-up, 1-left, 2-down, 3-right
   var aiming = false
+  var rabbit: Point = null
+  val rnd = new Random()
+  var updateTime = INITIAL_SPEED
 
   def createCanvas = () => {
     canvas = dom.document.createElement("canvas").asInstanceOf[Canvas]
@@ -84,47 +89,68 @@ object Main extends App {
       if (checkGameOver(newPoint)) {
         newGame()
       } else {
+        val aboutToEat = aboutToEatRabbit()
         segments = newPoint +: segments
-        segments = segments.dropRight(1)
+        if (aboutToEat) {
+          updateTime = (updateTime.toDouble*SPEED_RATIO).toInt
+          placeRabbit()
+        } else {
+          segments = segments.dropRight(1)
+        }
       }
     }
+  }
 
-    // val modif = (hero.speed * modifier).toInt
-    // var Position(x, y) = hero.pos
-    // if (keysDown.contains(KeyCode.Left))  x -= modif
-    // if (keysDown.contains(KeyCode.Right)) x += modif
-    // if (keysDown.contains(KeyCode.Up))    y -= modif
-    // if (keysDown.contains(KeyCode.Down))  y += modif
+  def isFree(x: Int, y: Int): Boolean = {
+    for (segment <- segments) {
+      if (segment.x == x && segment.y == y) {
+        return false
+      }
+    }
+    true
+  }
 
-    // val newPos = Position(x, y)
-    // if (isValidPosition(newPos, canvas)) {
-    //   hero = hero.copy(pos = newPos)
-    // }
+  def placeRabbit(): Unit = {
+    while (true) {
+      val x = rnd.nextInt(COLS)
+      val y = rnd.nextInt(ROWS)
+      if (isFree(x, y)) {
 
-    // // Are they touching?
-    // if (areTouching(hero.pos, monster.pos)) {
-    //   monstersCaught += 1
-    //   reset()
-    // }
+        rabbit = new Point(x, y)
+        return
+      }
+    }
+  }
+
+  def aboutToEatRabbit(): Boolean = {
+    var newPoint: Point = getAimingPoint()
+    if (newPoint.x == rabbit.x && newPoint.y == rabbit.y) {
+      return true
+    }
+    return false
   }
 
   // Draw everything
   def render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     for (segment <- segments) {
-      segment.draw(ctx, "#937A7E")
+      segment.draw(ctx, "#E4AB91")
     }
 
     if (aiming) {
       var newPoint: Point = getAimingPoint()
-      newPoint.draw(ctx, "#AFC4BD")
+      newPoint.draw(ctx, "#F9849A")
     }
+    
+    rabbit.draw(ctx, "#739A8B")
   }
 
   def newGame = () => {
     segments = new Array[Point](1)
     segments(0) = new Point(COLS/2, ROWS/2)
     dir = 0
+    placeRabbit()
+    updateTime = INITIAL_SPEED
   }
 
   var prev = js.Date.now()
@@ -132,7 +158,7 @@ object Main extends App {
   val gameLoop = () => {
     val now = js.Date.now()
     val delta = now - prev
-    if (delta >= 1000) {
+    if (delta >= updateTime) {
       update()
       render()
       prev = now
