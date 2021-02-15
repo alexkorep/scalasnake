@@ -1,0 +1,22 @@
+[0m[[0m[0minfo[0m] [0m[0mFast optimizing /Users/alexey/proj/scalasnake/scalasnake/target/scala-2.13/scalasnake-fastopt[0m
+[0m[[0m[0mdebug[0m] [0m[0mLinker: Compute reachability: 73762 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mLinker: Assemble LinkedClasses: 7887 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mLinker: 104726 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Batch mode: false[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Incremental part: 13370 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Optimizing 114 methods.[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: Optimizer part: 35416 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mOptimizer: 50940 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mRefiner: Compute reachability: 23166 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mRefiner: Assemble LinkedClasses: 2019 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mRefiner: 27638 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mModule Splitter: Calculate Dependency Info: 297 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mModule Splitter: Analyze Modules: 75 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mModule Splitter: Assemble Modules: 311 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mModule Splitter: 894 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Generate Classes: 65542 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Write trees: 1315 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Class tree cache stats: reused: 301 -- invalidated: 4[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: Method tree cache stats: reused: 855 -- invalidated: 48[0m
+[0m[[0m[0mdebug[0m] [0m[0mEmitter: 76953 us[0m
+[0m[[0m[0mdebug[0m] [0m[0mBasicBackend: Write result: 239629 us[0m
