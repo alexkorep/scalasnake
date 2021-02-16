@@ -33,6 +33,7 @@ object Main extends App {
   var rabbit: Point = null
   val rnd = new Random()
   var updateTime = INITIAL_SPEED
+  var score = 0
 
   def createCanvas = () => {
     canvas = dom.document.createElement("canvas").asInstanceOf[Canvas]
@@ -65,7 +66,8 @@ object Main extends App {
 
   val checkGameOver = (newPoint: Point) => {
     newPoint.x < 0 || newPoint.y < 0 || 
-      newPoint.x > COLS - 1 || newPoint.y > ROWS - 1
+      newPoint.x > COLS - 1 || newPoint.y > ROWS - 1 || 
+      !isFree(newPoint.x, newPoint.y)
   }
 
   val getAimingPoint = () => {
@@ -97,6 +99,7 @@ object Main extends App {
         if (aboutToEat) {
           updateTime = (updateTime.toDouble*SPEED_RATIO).toInt
           placeRabbit()
+          score = score + 1
         } else {
           segments = segments.dropRight(1)
         }
@@ -148,6 +151,10 @@ object Main extends App {
     for (segment <- segments) {
       segment.draw(ctx, "#F9849A")
     }
+
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("Score: " + score.toString, 10, 30);
   }
 
   def newGame = () => {
@@ -156,6 +163,7 @@ object Main extends App {
     dir = 0
     placeRabbit()
     updateTime = INITIAL_SPEED
+    score = 0
   }
 
   var prev = js.Date.now()
