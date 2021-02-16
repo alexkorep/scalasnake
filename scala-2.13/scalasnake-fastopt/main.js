@@ -3911,6 +3911,20 @@ $c_sr_AbstractFunction1.prototype.toString__T = (function() {
   return "<function1>"
 });
 /** @constructor */
+function $c_sr_AbstractFunction2() {
+  /*<skip>*/
+}
+$c_sr_AbstractFunction2.prototype = new $h_O();
+$c_sr_AbstractFunction2.prototype.constructor = $c_sr_AbstractFunction2;
+/** @constructor */
+function $h_sr_AbstractFunction2() {
+  /*<skip>*/
+}
+$h_sr_AbstractFunction2.prototype = $c_sr_AbstractFunction2.prototype;
+$c_sr_AbstractFunction2.prototype.toString__T = (function() {
+  return "<function2>"
+});
+/** @constructor */
 function $c_sr_IntRef(elem) {
   this.sr_IntRef__f_elem = 0;
   this.sr_IntRef__f_elem = elem
@@ -4128,6 +4142,7 @@ function $c_LMain$() {
   this.LMain$__f_rabbit = null;
   this.LMain$__f_rnd = null;
   this.LMain$__f_updateTime = 0;
+  this.LMain$__f_score = 0;
   this.LMain$__f_checkGameOver = null;
   this.LMain$__f_getAimingPoint = null;
   this.LMain$__f_prev = 0.0;
@@ -4148,6 +4163,35 @@ function $h_LMain$() {
   /*<skip>*/
 }
 $h_LMain$.prototype = $c_LMain$.prototype;
+$c_LMain$.prototype.dirFromTouch__I__I__I = (function(x, y) {
+  var head = this.LMain$__f_segments.get(0);
+  var rowWidth = $intDiv($uI(this.LMain$__f_canvas.width), this.LMain$__f_COLS);
+  var rowHeight = $intDiv($uI(this.LMain$__f_canvas.height), this.LMain$__f_ROWS);
+  var sx = $imul(rowWidth, $doubleToInt((head.LMain$Point__f_x + 0.5)));
+  var sy = $imul(rowHeight, $doubleToInt((head.LMain$Point__f_y + 0.5)));
+  var dx = ((sx - x) | 0);
+  var dy = ((sy - y) | 0);
+  if ((((dx < 0) ? ((-dx) | 0) : dx) > ((dy < 0) ? ((-dy) | 0) : dy))) {
+    if ((dx > 0)) {
+      return 1
+    } else {
+      return 3
+    }
+  } else if ((dy > 0)) {
+    return 0
+  } else {
+    return 2
+  }
+});
+$c_LMain$.prototype.onPress__F2 = (function() {
+  return new $c_sjsr_AnonFunction2(((this$1) => ((x$2, y$2) => {
+    var x = $uI(x$2);
+    var y = $uI(y$2);
+    $m_LMain$().LMain$__f_aiming = true;
+    $m_LMain$().LMain$__f_dir = $m_LMain$().dirFromTouch__I__I__I(x, y);
+    $m_LMain$().render__V()
+  }))(this))
+});
 $c_LMain$.prototype.createCanvas__F0 = (function() {
   return new $c_sjsr_AnonFunction0(((this$1) => (() => {
     $m_LMain$().LMain$__f_canvas = $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().createElement("canvas");
@@ -4158,25 +4202,16 @@ $c_LMain$.prototype.createCanvas__F0 = (function() {
     $m_LMain$().LMain$__f_canvas.width = size;
     $m_LMain$().LMain$__f_canvas.height = size;
     $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.appendChild($m_LMain$().LMain$__f_canvas);
-    $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.onmousedown = ((arg1$2) => {
-      $m_LMain$();
-      $m_LMain$().LMain$__f_aiming = true
-    });
-    $m_LMain$().LMain$__f_canvas.addEventListener("touchstart", ((arg1$2$1) => $m_LMain$().Main$$$anonfun$createCanvas$3__Lorg_scalajs_dom_raw_TouchEvent__Z(arg1$2$1)), false);
-    $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.onmouseup = ((arg1$2$2) => {
-      $m_LMain$();
-      $m_LMain$().LMain$__f_aiming = false
-    });
-    $m_LMain$().LMain$__f_canvas.addEventListener("touchend", ((arg1$2$3) => $m_LMain$().Main$$$anonfun$createCanvas$5__Lorg_scalajs_dom_raw_TouchEvent__Z(arg1$2$3)), false)
+    $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.onmousedown = ((arg1$2) => $m_LMain$().Main$$$anonfun$createCanvas$2__Lorg_scalajs_dom_raw_MouseEvent__Z(arg1$2));
+    $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.onmousemove = ((arg1$2$1) => $m_LMain$().Main$$$anonfun$createCanvas$3__Lorg_scalajs_dom_raw_MouseEvent__Z(arg1$2$1));
+    $m_Lorg_scalajs_dom_package$().document__Lorg_scalajs_dom_raw_HTMLDocument().body.onmouseup = ((arg1$2$2) => $m_LMain$().Main$$$anonfun$createCanvas$4__Lorg_scalajs_dom_raw_MouseEvent__Z(arg1$2$2));
+    $m_LMain$().LMain$__f_canvas.addEventListener("touchstart", ((arg1$2$3) => $m_LMain$().Main$$$anonfun$createCanvas$5__Lorg_scalajs_dom_raw_TouchEvent__Z(arg1$2$3)), false);
+    $m_LMain$().LMain$__f_canvas.addEventListener("touchmove", ((arg1$2$4) => $m_LMain$().Main$$$anonfun$createCanvas$6__Lorg_scalajs_dom_raw_TouchEvent__Z(arg1$2$4)), false);
+    $m_LMain$().LMain$__f_canvas.addEventListener("touchend", ((arg1$2$5) => $m_LMain$().Main$$$anonfun$createCanvas$7__Lorg_scalajs_dom_raw_TouchEvent__Z(arg1$2$5)), false)
   }))(this))
 });
 $c_LMain$.prototype.update__V = (function() {
-  if (this.LMain$__f_aiming) {
-    this.LMain$__f_dir = ((1 + this.LMain$__f_dir) | 0);
-    if ((this.LMain$__f_dir > 3)) {
-      this.LMain$__f_dir = 0
-    }
-  } else {
+  if ((!this.LMain$__f_aiming)) {
     var newPoint = $as_LMain$Point(this.LMain$__f_getAimingPoint.apply__O());
     if ($uZ(this.LMain$__f_checkGameOver.apply__O__O(newPoint))) {
       var this$1 = this.newGame__F0();
@@ -4191,7 +4226,8 @@ $c_LMain$.prototype.update__V = (function() {
       this.LMain$__f_segments = dest;
       if (aboutToEat) {
         this.LMain$__f_updateTime = $doubleToInt((this.LMain$__f_updateTime * this.LMain$__f_SPEED_RATIO));
-        this.placeRabbit__V()
+        this.placeRabbit__V();
+        this.LMain$__f_score = ((1 + this.LMain$__f_score) | 0)
       } else {
         var $$x1 = $m_sc_ArrayOps$();
         var xs$1 = this.LMain$__f_segments;
@@ -4318,10 +4354,6 @@ $c_LMain$.prototype.render__V = (function() {
   this.LMain$__f_ctx.fillStyle = "#BBB09E";
   this.LMain$__f_ctx.fillRect(0.0, 0.0, $uI(this.LMain$__f_canvas.width), $uI(this.LMain$__f_canvas.height));
   this.LMain$__f_rabbit.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#739A8B");
-  if (this.LMain$__f_aiming) {
-    var newPoint = $as_LMain$Point(this.LMain$__f_getAimingPoint.apply__O());
-    newPoint.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#E4AB91")
-  };
   var xs = this.LMain$__f_segments;
   var f = ((this$3) => ((segment$2) => {
     var segment = $as_LMain$Point(segment$2);
@@ -4395,7 +4427,17 @@ $c_LMain$.prototype.render__V = (function() {
     }
   } else {
     throw new $c_s_MatchError(xs)
-  }
+  };
+  if (this.LMain$__f_aiming) {
+    var newPoint = $as_LMain$Point(this.LMain$__f_getAimingPoint.apply__O());
+    newPoint.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#E4AB91")
+  };
+  this.LMain$__f_ctx.font = "30px Arial";
+  this.LMain$__f_ctx.fillStyle = "black";
+  var qual$1 = this.LMain$__f_ctx;
+  var this$6 = this.LMain$__f_score;
+  var x$1 = ("Score: " + ("" + this$6));
+  qual$1.fillText(x$1, 10.0, 30.0)
 });
 $c_LMain$.prototype.newGame__F0 = (function() {
   return new $c_sjsr_AnonFunction0(((this$1) => (() => {
@@ -4403,15 +4445,50 @@ $c_LMain$.prototype.newGame__F0 = (function() {
     $m_LMain$().LMain$__f_segments.set(0, new $c_LMain$Point((($m_LMain$().LMain$__f_COLS / 2) | 0), (($m_LMain$().LMain$__f_ROWS / 2) | 0)));
     $m_LMain$().LMain$__f_dir = 0;
     $m_LMain$().placeRabbit__V();
-    $m_LMain$().LMain$__f_updateTime = $m_LMain$().LMain$__f_INITIAL_SPEED
+    $m_LMain$().LMain$__f_updateTime = $m_LMain$().LMain$__f_INITIAL_SPEED;
+    $m_LMain$().LMain$__f_score = 0
   }))(this))
 });
-$c_LMain$.prototype.Main$$$anonfun$createCanvas$3__Lorg_scalajs_dom_raw_TouchEvent__Z = (function(e0) {
+$c_LMain$.prototype.Main$$$anonfun$createCanvas$2__Lorg_scalajs_dom_raw_MouseEvent__Z = (function(e) {
   $m_LMain$().LMain$__f_aiming = true;
-  e0.preventDefault();
+  var this$1 = $m_LMain$().onPress__F2();
+  var v1 = $doubleToInt($uD(e.clientX));
+  var v2 = $doubleToInt($uD(e.clientY));
+  this$1.apply__O__O__O(v1, v2);
+  e.preventDefault();
+  return false
+});
+$c_LMain$.prototype.Main$$$anonfun$createCanvas$3__Lorg_scalajs_dom_raw_MouseEvent__Z = (function(e) {
+  if ($m_LMain$().LMain$__f_aiming) {
+    var this$1 = $m_LMain$().onPress__F2();
+    var v1 = $doubleToInt($uD(e.clientX));
+    var v2 = $doubleToInt($uD(e.clientY));
+    this$1.apply__O__O__O(v1, v2)
+  };
+  e.preventDefault();
+  return false
+});
+$c_LMain$.prototype.Main$$$anonfun$createCanvas$4__Lorg_scalajs_dom_raw_MouseEvent__Z = (function(e) {
+  $m_LMain$().LMain$__f_aiming = false;
+  e.preventDefault();
   return false
 });
 $c_LMain$.prototype.Main$$$anonfun$createCanvas$5__Lorg_scalajs_dom_raw_TouchEvent__Z = (function(e0) {
+  e0.preventDefault();
+  var this$1 = $m_LMain$().onPress__F2();
+  var v1 = $doubleToInt($uD(e0.touches[0].clientX));
+  var v2 = $doubleToInt($uD(e0.touches[0].clientY));
+  this$1.apply__O__O__O(v1, v2);
+  return false
+});
+$c_LMain$.prototype.Main$$$anonfun$createCanvas$6__Lorg_scalajs_dom_raw_TouchEvent__Z = (function(e0) {
+  $m_LMain$().LMain$__f_aiming = true;
+  e0.preventDefault();
+  $m_LMain$().LMain$__f_dir = $m_LMain$().dirFromTouch__I__I__I($doubleToInt($uD(e0.touches[0].clientX)), $doubleToInt($uD(e0.touches[0].clientY)));
+  $m_LMain$().render__V();
+  return false
+});
+$c_LMain$.prototype.Main$$$anonfun$createCanvas$7__Lorg_scalajs_dom_raw_TouchEvent__Z = (function(e0) {
   $m_LMain$().LMain$__f_aiming = false;
   e0.preventDefault();
   return false
@@ -4429,9 +4506,10 @@ $c_LMain$.prototype.delayedEndpoint$Main$1__V = (function() {
   this.LMain$__f_rabbit = null;
   this.LMain$__f_rnd = $ct_s_util_Random__(new $c_s_util_Random());
   this.LMain$__f_updateTime = this.LMain$__f_INITIAL_SPEED;
+  this.LMain$__f_score = 0;
   this.LMain$__f_checkGameOver = new $c_sjsr_AnonFunction1(((this$1) => ((newPoint$2) => {
     var newPoint = $as_LMain$Point(newPoint$2);
-    return ((((newPoint.LMain$Point__f_x < 0) || (newPoint.LMain$Point__f_y < 0)) || (newPoint.LMain$Point__f_x > (((-1) + $m_LMain$().LMain$__f_COLS) | 0))) || (newPoint.LMain$Point__f_y > (((-1) + $m_LMain$().LMain$__f_ROWS) | 0)))
+    return (((((newPoint.LMain$Point__f_x < 0) || (newPoint.LMain$Point__f_y < 0)) || (newPoint.LMain$Point__f_x > (((-1) + $m_LMain$().LMain$__f_COLS) | 0))) || (newPoint.LMain$Point__f_y > (((-1) + $m_LMain$().LMain$__f_ROWS) | 0))) || (!$m_LMain$().isFree__I__I__Z(newPoint.LMain$Point__f_x, newPoint.LMain$Point__f_y)))
   }))(this));
   this.LMain$__f_getAimingPoint = new $c_sjsr_AnonFunction0(((this$2) => (() => {
     var head = $m_LMain$().LMain$__f_segments.get(0);
@@ -4994,6 +5072,30 @@ var $d_sjsr_AnonFunction1 = new $TypeData().initClass({
   F1: 1
 });
 $c_sjsr_AnonFunction1.prototype.$classData = $d_sjsr_AnonFunction1;
+/** @constructor */
+function $c_sjsr_AnonFunction2(f) {
+  this.sjsr_AnonFunction2__f_f = null;
+  this.sjsr_AnonFunction2__f_f = f
+}
+$c_sjsr_AnonFunction2.prototype = new $h_sr_AbstractFunction2();
+$c_sjsr_AnonFunction2.prototype.constructor = $c_sjsr_AnonFunction2;
+/** @constructor */
+function $h_sjsr_AnonFunction2() {
+  /*<skip>*/
+}
+$h_sjsr_AnonFunction2.prototype = $c_sjsr_AnonFunction2.prototype;
+$c_sjsr_AnonFunction2.prototype.apply__O__O__O = (function(arg1, arg2) {
+  return (0, this.sjsr_AnonFunction2__f_f)(arg1, arg2)
+});
+var $d_sjsr_AnonFunction2 = new $TypeData().initClass({
+  sjsr_AnonFunction2: 0
+}, false, "scala.scalajs.runtime.AnonFunction2", {
+  sjsr_AnonFunction2: 1,
+  sr_AbstractFunction2: 1,
+  O: 1,
+  F2: 1
+});
+$c_sjsr_AnonFunction2.prototype.$classData = $d_sjsr_AnonFunction2;
 class $c_s_util_control_ControlThrowable extends $c_jl_Throwable {
 }
 function $f_jl_Byte__equals__O__Z($thiz, that) {
