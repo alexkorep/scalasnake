@@ -35,6 +35,36 @@ object Main extends App {
   var updateTime = INITIAL_SPEED
   var score = 0
 
+  def dirFromTouch(x: Int, y: Int): Int = {
+    val head = segments(0)
+    val rowWidth = canvas.width/COLS
+    val rowHeight = canvas.height/ROWS
+    val sx = rowWidth*(head.x + 0.5).toInt
+    val sy = rowHeight*(head.y + .5).toInt
+    val dx = sx - x
+    val dy = sy - y
+
+    if (dx.abs > dy.abs) {
+      if (dx > 0) {
+        return 1
+      } else {
+        return 3
+      }
+    } else {
+      if (dy > 0) {
+        return 0
+      } else {
+        return 2
+      }
+    }
+  }
+
+  def onPress = (x: Int, y: Int) => {
+    aiming = true
+    dir = dirFromTouch(x, y)
+    render()
+  }
+
   def createCanvas = () => {
     canvas = dom.document.createElement("canvas").asInstanceOf[Canvas]
     ctx = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
@@ -43,20 +73,40 @@ object Main extends App {
     canvas.width = size
     canvas.height = size
     dom.document.body.appendChild(canvas)
+
+    // Mouse
     dom.document.body.onmousedown = { (e: dom.MouseEvent) =>
       aiming = true
-    }
-    // dom.document.body.ontouchstart = { (e: dom.TouchEvent) =>
-    //   aiming = true
-    // }
-    canvas.addEventListener("touchstart", { (e0: dom.TouchEvent) => 
-      aiming = true
-      e0.preventDefault()
+      onPress(e.clientX.toInt, e.clientY.toInt)  
+      e.preventDefault()
       false
-    }, false)
+    }
+    dom.document.body.onmousemove = { (e: dom.MouseEvent) =>
+      if (aiming) {
+        onPress(e.clientX.toInt, e.clientY.toInt)  
+      }
+      e.preventDefault()
+      false
+    }
     dom.document.body.onmouseup = { (e: dom.MouseEvent) =>
       aiming = false
+      e.preventDefault()
+      false
     }
+
+    // Touch screen
+    canvas.addEventListener("touchstart", { (e0: dom.TouchEvent) => 
+      e0.preventDefault()
+      onPress(e0.touches(0).clientX.toInt, e0.touches(0).clientY.toInt)
+      false
+    }, false)
+    canvas.addEventListener("touchmove", { (e0: dom.TouchEvent) => 
+      aiming = true
+      e0.preventDefault()
+      dir = dirFromTouch(e0.touches(0).clientX.toInt, e0.touches(0).clientY.toInt)
+      render()
+      false
+    }, false)
     canvas.addEventListener("touchend", { (e0: dom.TouchEvent) => 
       aiming = false
       e0.preventDefault()
@@ -85,10 +135,10 @@ object Main extends App {
   // Update game objects
   def update() {
     if (aiming) {
-      dir = dir + 1
-      if (dir > 3) {
-        dir = 0
-      }
+      // dir = dir + 1
+      // if (dir > 3) {
+      //   dir = 0
+      // }
     } else {
       var newPoint: Point = getAimingPoint()
       if (checkGameOver(newPoint)) {
@@ -138,20 +188,25 @@ object Main extends App {
 
   // Draw everything
   def render() {
+    // Clear canvas
     ctx.fillStyle = "#BBB09E";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
+    // Draw the rabbit
     rabbit.draw(ctx, "#739A8B")
 
+    // Draw the snake
+    for (segment <- segments) {
+      segment.draw(ctx, "#F9849A")
+    }
+
+    // Draw aiming point
     if (aiming) {
       var newPoint: Point = getAimingPoint()
       newPoint.draw(ctx, "#E4AB91")
     }
     
-    for (segment <- segments) {
-      segment.draw(ctx, "#F9849A")
-    }
-
+    // Draw the score
     ctx.font = "30px Arial";
     ctx.fillStyle = "black";
     ctx.fillText("Score: " + score.toString, 10, 30);
