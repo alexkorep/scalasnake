@@ -13,13 +13,44 @@ object Main extends App {
   val INITIAL_SPEED = 1000
 
   class Point(var x: Int, var y: Int) {
+    val SEGMENT_SIZE = .6
     def draw(ctx: dom.CanvasRenderingContext2D, color: String): Unit = {
-      val SEGMENT_SIZE = .6
       ctx.beginPath()
       val rowWidth = canvas.width/COLS
       val rowHeight = canvas.height/ROWS
       ctx.arc(rowWidth*(x + 0.5), rowHeight*(y + .5), 
         rowWidth*SEGMENT_SIZE, 0, 2 * Math.PI)
+      ctx.fillStyle = color
+      ctx.fill()
+    }
+
+    def drawEyes(ctx: dom.CanvasRenderingContext2D, color: String, dir: Int): Unit = {
+      var x1 = 0
+      var x2 = 0
+      var y1 = 0
+      var y2 = 0
+      dir match {
+        // Up
+        case 0 => x1 = -1; y1 = -1; x2 = 1; y2= -1
+        // left
+        case 1 => x1 = -1; y1 = -1; x2 = -1; y2= 1
+        // down
+        case 2 => x1 = -1; y1 = 1; x2 = 1; y2= 1
+        // right
+        case 3 => x1 = 1; y1 = -1; x2 = 1; y2= 1
+      }
+
+      ctx.beginPath()
+      val rowWidth = canvas.width/COLS
+      val rowHeight = canvas.height/ROWS
+      val EYE_OFFSET = rowWidth/4
+      var EYE_SIZE = rowWidth/6
+      ctx.arc(rowWidth*(x + 0.5) + x1*EYE_OFFSET, 
+        rowHeight*(y + .5) + y1*EYE_OFFSET, 
+        EYE_SIZE, 0, 2 * Math.PI)
+      ctx.arc(rowWidth*(x + 0.5) + x2*EYE_OFFSET, 
+        rowHeight*(y + .5) + y2*EYE_OFFSET, 
+        EYE_SIZE, 0, 2 * Math.PI)
       ctx.fillStyle = color
       ctx.fill()
     }
@@ -192,6 +223,11 @@ object Main extends App {
     return false
   }
 
+  def drawEyes() = {
+    val head = segments(0)
+    head.drawEyes(ctx, "#E4AB91", dir)
+  }
+
   // Draw everything
   def render() {
     // Clear canvas
@@ -208,6 +244,7 @@ object Main extends App {
       for (segment <- segments) {
         segment.draw(ctx, "#F9849A")
       }
+      drawEyes()
     }
 
     if (!gameOver) {
