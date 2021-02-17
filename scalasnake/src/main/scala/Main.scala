@@ -123,7 +123,8 @@ object Main extends App {
     }
     dom.document.body.onmousemove = { (e: dom.MouseEvent) =>
       if (aiming) {
-        onPress(e.clientX.toInt, e.clientY.toInt)  
+        dir = dirFromTouch(e.clientX.toInt, e.clientY.toInt)
+        render()
       }
       e.preventDefault()
       false
