@@ -4537,10 +4537,8 @@ $c_LMain$.prototype.Main$$$anonfun$createCanvas$2__Lorg_scalajs_dom_raw_MouseEve
 });
 $c_LMain$.prototype.Main$$$anonfun$createCanvas$3__Lorg_scalajs_dom_raw_MouseEvent__Z = (function(e) {
   if ($m_LMain$().LMain$__f_aiming) {
-    var this$1 = $m_LMain$().onPress__F2();
-    var v1 = $doubleToInt($uD(e.clientX));
-    var v2 = $doubleToInt($uD(e.clientY));
-    this$1.apply__O__O__O(v1, v2)
+    $m_LMain$().LMain$__f_dir = $m_LMain$().dirFromTouch__I__I__I($doubleToInt($uD(e.clientX)), $doubleToInt($uD(e.clientY)));
+    $m_LMain$().render__V()
   };
   e.preventDefault();
   return false

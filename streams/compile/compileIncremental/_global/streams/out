@@ -22,12 +22,12 @@
 [0m[[0m[0mdebug[0m] [0m[0mcompilation cycle 1[0m
 [0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/alexey/proj/scalasnake/scalasnake/target/scala-2.13/classes ...[0m
 [0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.13:1.4.4:compile for Scala 2.13.3[0m
-[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler ffffffffa46588d1 for Scala compiler version 2.13.3[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 2dd20613 for Scala compiler version 2.13.3[0m
 [0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	-Xplugin:/Users/alexey/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-compiler_2.13.3/1.5.0/scalajs-compiler_2.13.3-1.5.0.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
 [0m[[0m[0mdebug[0m] [0m[0m	/Users/alexey/.sdkman/candidates/java/8.0.232.j9-adpt/jre/lib/compressedrefs/jclSC180/vm.jar:/Users/alexey/.sdkman/candidates/java/8.0.232.j9-adpt/jre/lib/se-service.jar:/Users/alexey/.sdkman/candidates/java/8.0.232.j9-adpt/jre/lib/rt.jar:/Users/alexey/.sdkman/candidates/java/8.0.232.j9-adpt/jre/lib/resources.jar:/Users/alexey/.sdkman/candidates/java/8.0.232.j9-adpt/jre/lib/jsse.jar:/Users/alexey/.sdkman/candidates/java/8.0.232.j9-adpt/jre/lib/charsets.jar:/Users/alexey/.sdkman/candidates/java/8.0.232.j9-adpt/jre/lib/jce.jar:/Users/alexey/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.3/scala-library-2.13.3.jar[0m
 [0m[[0m[0mdebug[0m] [0m[0m	-classpath[0m
 [0m[[0m[0mdebug[0m] [0m[0m	/Users/alexey/proj/scalasnake/scalasnake/target/scala-2.13/classes:/Users/alexey/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-library_2.13/1.5.0/scalajs-library_2.13-1.5.0.jar:/Users/alexey/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.13/1.1.2/scala-parser-combinators_2.13-1.1.2.jar:/Users/alexey/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-dom_sjs1_2.13/1.1.0/scalajs-dom_sjs1_2.13-1.1.0.jar[0m
-[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 1.042157201 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 1.29388137 s[0m
 [0m[[0m[0mdebug[0m] [0m[0mdone compiling[0m
