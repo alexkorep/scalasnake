@@ -37,6 +37,7 @@ object Main extends App {
   // Coordinates where mouse swipe has started
   var swipeX = 0
   var swipeY = 0
+  var gameOver = true
 
   def dirFromTouch(x: Int, y: Int): Int = {
     val dx = swipeX - x
@@ -65,6 +66,14 @@ object Main extends App {
     dir = dirFromTouch(x, y)
   }
 
+  def onMouseUp = () => {
+      if (gameOver) {
+        gameOver = false
+        newGame()
+      }
+      aiming = false
+  }
+
   def createCanvas = () => {
     canvas = dom.document.createElement("canvas").asInstanceOf[Canvas]
     ctx = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
@@ -89,7 +98,7 @@ object Main extends App {
       false
     }
     dom.document.body.onmouseup = { (e: dom.MouseEvent) =>
-      aiming = false
+      onMouseUp()
       e.preventDefault()
       false
     }
@@ -108,7 +117,7 @@ object Main extends App {
       false
     }, false)
     canvas.addEventListener("touchend", { (e0: dom.TouchEvent) => 
-      aiming = false
+      onMouseUp()
       e0.preventDefault()
       false
     }, false)
@@ -134,25 +143,22 @@ object Main extends App {
 
   // Update game objects
   def update() {
-    if (aiming) {
-      // dir = dir + 1
-      // if (dir > 3) {
-      //   dir = 0
-      // }
+    if (gameOver || aiming) {
+      return
+    }
+    
+    var newPoint: Point = getAimingPoint()
+    if (checkGameOver(newPoint)) {
+      gameOver = true
     } else {
-      var newPoint: Point = getAimingPoint()
-      if (checkGameOver(newPoint)) {
-        newGame()
+      val aboutToEat = aboutToEatRabbit()
+      segments = newPoint +: segments
+      if (aboutToEat) {
+        updateTime = (updateTime.toDouble*SPEED_RATIO).toInt
+        placeRabbit()
+        score = score + 1
       } else {
-        val aboutToEat = aboutToEatRabbit()
-        segments = newPoint +: segments
-        if (aboutToEat) {
-          updateTime = (updateTime.toDouble*SPEED_RATIO).toInt
-          placeRabbit()
-          score = score + 1
-        } else {
-          segments = segments.dropRight(1)
-        }
+        segments = segments.dropRight(1)
       }
     }
   }
@@ -191,21 +197,32 @@ object Main extends App {
     // Clear canvas
     ctx.fillStyle = "#BBB09E";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw the rabbit
-    rabbit.draw(ctx, "#739A8B")
 
-    // Draw the snake
-    for (segment <- segments) {
-      segment.draw(ctx, "#F9849A")
+    if (!gameOver) {
+      // Draw the rabbit
+      rabbit.draw(ctx, "#739A8B")
+
+      // Draw the snake
+      for (segment <- segments) {
+        segment.draw(ctx, "#F9849A")
+      }
+
+      // Draw aiming point
+      if (aiming) {
+        var newPoint: Point = getAimingPoint()
+        newPoint.draw(ctx, "#E4AB91")
+      }
+    }
+    
+    if (gameOver) {
+      ctx.font = "30px Arial";
+      ctx.fillStyle = "black";
+      ctx.fillText("Touch to start the game", 10, 72);
+      if (score > 0) {
+        ctx.fillText("Game over!", 150, 30);
+      }
     }
 
-    // Draw aiming point
-    if (aiming) {
-      var newPoint: Point = getAimingPoint()
-      newPoint.draw(ctx, "#E4AB91")
-    }
-    
     // Draw the score
     ctx.font = "30px Arial";
     ctx.fillStyle = "black";
