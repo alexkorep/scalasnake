@@ -1,4 +1,4 @@
-[0m[[0m[0mdebug[0m] [0m[0m> Exec(fastLinkJS, Some(e04d9b62-4182-4dd4-9205-90684b6e538d), Some(CommandSource(console0)))[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(fastLinkJS, Some(3ab807a2-f793-4d1d-8395-9ff204e8ac9e), Some(CommandSource(console0)))[0m
 [0m[[0m[0mdebug[0m] [0m[0mEvaluating tasks: Compile / fastLinkJS[0m
 [0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
 [0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/alexey/proj/scalasnake/scalasnake/target/scala-2.13/classes ...[0m
@@ -6,5 +6,5 @@
 [0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
 [0m[[0m[0minfo[0m] [0m[0mFast optimizing /Users/alexey/proj/scalasnake/scalasnake/target/scala-2.13/scalasnake-fastopt[0m
 [0m[[0m[0mdebug[0m] [0m[0mGlobal IR cache stats: reused: 4 -- invalidated: 4 -- trees read: 4[0m
-[0m[[0m[32msuccess[0m] [0m[0mTotal time: 2 s, completed Feb 16, 2021 7:08:59 AM[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 1 s, completed Feb 17, 2021 9:25:20 PM[0m
 [0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m

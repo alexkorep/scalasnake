@@ -934,8 +934,10 @@ function $s_LMain__main__AT__V(args) {
 function $c_LMain$Point(x, y) {
   this.LMain$Point__f_x = 0;
   this.LMain$Point__f_y = 0;
+  this.LMain$Point__f_SEGMENT_SIZE = 0.0;
   this.LMain$Point__f_x = x;
-  this.LMain$Point__f_y = y
+  this.LMain$Point__f_y = y;
+  this.LMain$Point__f_SEGMENT_SIZE = 0.6
 }
 $c_LMain$Point.prototype = new $h_O();
 $c_LMain$Point.prototype.constructor = $c_LMain$Point;
@@ -948,7 +950,55 @@ $c_LMain$Point.prototype.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T_
   ctx.beginPath();
   var rowWidth = $intDiv($uI($m_LMain$().LMain$__f_canvas.width), $m_LMain$().LMain$__f_COLS);
   var rowHeight = $intDiv($uI($m_LMain$().LMain$__f_canvas.height), $m_LMain$().LMain$__f_ROWS);
-  ctx.arc((rowWidth * (this.LMain$Point__f_x + 0.5)), (rowHeight * (this.LMain$Point__f_y + 0.5)), (0.6 * rowWidth), 0.0, 6.283185307179586);
+  ctx.arc((rowWidth * (this.LMain$Point__f_x + 0.5)), (rowHeight * (this.LMain$Point__f_y + 0.5)), (rowWidth * this.LMain$Point__f_SEGMENT_SIZE), 0.0, 6.283185307179586);
+  ctx.fillStyle = color;
+  ctx.fill()
+});
+$c_LMain$Point.prototype.drawEyes__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__I__V = (function(ctx, color, dir) {
+  var x1 = 0;
+  var x2 = 0;
+  var y1 = 0;
+  var y2 = 0;
+  switch (dir) {
+    case 0: {
+      x1 = (-1);
+      y1 = (-1);
+      x2 = 1;
+      y2 = (-1);
+      break
+    }
+    case 1: {
+      x1 = (-1);
+      y1 = (-1);
+      x2 = (-1);
+      y2 = 1;
+      break
+    }
+    case 2: {
+      x1 = (-1);
+      y1 = 1;
+      x2 = 1;
+      y2 = 1;
+      break
+    }
+    case 3: {
+      x1 = 1;
+      y1 = (-1);
+      x2 = 1;
+      y2 = 1;
+      break
+    }
+    default: {
+      throw new $c_s_MatchError(dir)
+    }
+  };
+  ctx.beginPath();
+  var rowWidth = $intDiv($uI($m_LMain$().LMain$__f_canvas.width), $m_LMain$().LMain$__f_COLS);
+  var rowHeight = $intDiv($uI($m_LMain$().LMain$__f_canvas.height), $m_LMain$().LMain$__f_ROWS);
+  var EYE_OFFSET = ((rowWidth / 4) | 0);
+  var EYE_SIZE = ((rowWidth / 6) | 0);
+  ctx.arc(((rowWidth * (this.LMain$Point__f_x + 0.5)) + $imul(x1, EYE_OFFSET)), ((rowHeight * (this.LMain$Point__f_y + 0.5)) + $imul(y1, EYE_OFFSET)), EYE_SIZE, 0.0, 6.283185307179586);
+  ctx.arc(((rowWidth * (this.LMain$Point__f_x + 0.5)) + $imul(x2, EYE_OFFSET)), ((rowHeight * (this.LMain$Point__f_y + 0.5)) + $imul(y2, EYE_OFFSET)), EYE_SIZE, 0.0, 6.283185307179586);
   ctx.fillStyle = color;
   ctx.fill()
 });
@@ -4143,6 +4193,9 @@ function $c_LMain$() {
   this.LMain$__f_rnd = null;
   this.LMain$__f_updateTime = 0;
   this.LMain$__f_score = 0;
+  this.LMain$__f_swipeX = 0;
+  this.LMain$__f_swipeY = 0;
+  this.LMain$__f_gameOver = false;
   this.LMain$__f_checkGameOver = null;
   this.LMain$__f_getAimingPoint = null;
   this.LMain$__f_prev = 0.0;
@@ -4164,13 +4217,8 @@ function $h_LMain$() {
 }
 $h_LMain$.prototype = $c_LMain$.prototype;
 $c_LMain$.prototype.dirFromTouch__I__I__I = (function(x, y) {
-  var head = this.LMain$__f_segments.get(0);
-  var rowWidth = $intDiv($uI(this.LMain$__f_canvas.width), this.LMain$__f_COLS);
-  var rowHeight = $intDiv($uI(this.LMain$__f_canvas.height), this.LMain$__f_ROWS);
-  var sx = $imul(rowWidth, $doubleToInt((head.LMain$Point__f_x + 0.5)));
-  var sy = $imul(rowHeight, $doubleToInt((head.LMain$Point__f_y + 0.5)));
-  var dx = ((sx - x) | 0);
-  var dy = ((sy - y) | 0);
+  var dx = ((this.LMain$__f_swipeX - x) | 0);
+  var dy = ((this.LMain$__f_swipeY - y) | 0);
   if ((((dx < 0) ? ((-dx) | 0) : dx) > ((dy < 0) ? ((-dy) | 0) : dy))) {
     if ((dx > 0)) {
       return 1
@@ -4188,8 +4236,20 @@ $c_LMain$.prototype.onPress__F2 = (function() {
     var x = $uI(x$2);
     var y = $uI(y$2);
     $m_LMain$().LMain$__f_aiming = true;
-    $m_LMain$().LMain$__f_dir = $m_LMain$().dirFromTouch__I__I__I(x, y);
-    $m_LMain$().render__V()
+    $m_LMain$().render__V();
+    $m_LMain$().LMain$__f_swipeX = x;
+    $m_LMain$().LMain$__f_swipeY = y;
+    $m_LMain$().LMain$__f_dir = $m_LMain$().dirFromTouch__I__I__I(x, y)
+  }))(this))
+});
+$c_LMain$.prototype.onMouseUp__F0 = (function() {
+  return new $c_sjsr_AnonFunction0(((this$1) => (() => {
+    if ($m_LMain$().LMain$__f_gameOver) {
+      $m_LMain$().LMain$__f_gameOver = false;
+      var this$2 = $m_LMain$().newGame__F0();
+      this$2.apply__O()
+    };
+    $m_LMain$().LMain$__f_aiming = false
   }))(this))
 });
 $c_LMain$.prototype.createCanvas__F0 = (function() {
@@ -4211,28 +4271,28 @@ $c_LMain$.prototype.createCanvas__F0 = (function() {
   }))(this))
 });
 $c_LMain$.prototype.update__V = (function() {
-  if ((!this.LMain$__f_aiming)) {
-    var newPoint = $as_LMain$Point(this.LMain$__f_getAimingPoint.apply__O());
-    if ($uZ(this.LMain$__f_checkGameOver.apply__O__O(newPoint))) {
-      var this$1 = this.newGame__F0();
-      this$1.apply__O()
+  if ((this.LMain$__f_gameOver || this.LMain$__f_aiming)) {
+    return (void 0)
+  };
+  var newPoint = $as_LMain$Point(this.LMain$__f_getAimingPoint.apply__O());
+  if ($uZ(this.LMain$__f_checkGameOver.apply__O__O(newPoint))) {
+    this.LMain$__f_gameOver = true
+  } else {
+    var aboutToEat = this.aboutToEatRabbit__Z();
+    var xs = this.LMain$__f_segments;
+    var len = ((1 + xs.u.length) | 0);
+    var dest = new ($d_LMain$Point.getArrayOf().constr)(len);
+    dest.set(0, newPoint);
+    $m_s_Array$().copy__O__I__O__I__I__V(xs, 0, dest, 1, xs.u.length);
+    this.LMain$__f_segments = dest;
+    if (aboutToEat) {
+      this.LMain$__f_updateTime = $doubleToInt((this.LMain$__f_updateTime * this.LMain$__f_SPEED_RATIO));
+      this.placeRabbit__V();
+      this.LMain$__f_score = ((1 + this.LMain$__f_score) | 0)
     } else {
-      var aboutToEat = this.aboutToEatRabbit__Z();
-      var xs = this.LMain$__f_segments;
-      var len = ((1 + xs.u.length) | 0);
-      var dest = new ($d_LMain$Point.getArrayOf().constr)(len);
-      dest.set(0, newPoint);
-      $m_s_Array$().copy__O__I__O__I__I__V(xs, 0, dest, 1, xs.u.length);
-      this.LMain$__f_segments = dest;
-      if (aboutToEat) {
-        this.LMain$__f_updateTime = $doubleToInt((this.LMain$__f_updateTime * this.LMain$__f_SPEED_RATIO));
-        this.placeRabbit__V();
-        this.LMain$__f_score = ((1 + this.LMain$__f_score) | 0)
-      } else {
-        var $$x1 = $m_sc_ArrayOps$();
-        var xs$1 = this.LMain$__f_segments;
-        this.LMain$__f_segments = $asArrayOf_LMain$Point($$x1.dropRight$extension__O__I__O(xs$1, 1), 1)
-      }
+      var $$x1 = $m_sc_ArrayOps$();
+      var xs$1 = this.LMain$__f_segments;
+      this.LMain$__f_segments = $asArrayOf_LMain$Point($$x1.dropRight$extension__O__I__O(xs$1, 1), 1)
     }
   }
 });
@@ -4350,94 +4410,111 @@ $c_LMain$.prototype.aboutToEatRabbit__Z = (function() {
   };
   return false
 });
+$c_LMain$.prototype.drawEyes__V = (function() {
+  var head = this.LMain$__f_segments.get(0);
+  head.drawEyes__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__I__V(this.LMain$__f_ctx, "#E4AB91", this.LMain$__f_dir)
+});
 $c_LMain$.prototype.render__V = (function() {
   this.LMain$__f_ctx.fillStyle = "#BBB09E";
   this.LMain$__f_ctx.fillRect(0.0, 0.0, $uI(this.LMain$__f_canvas.width), $uI(this.LMain$__f_canvas.height));
-  this.LMain$__f_rabbit.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#739A8B");
-  var xs = this.LMain$__f_segments;
-  var f = ((this$3) => ((segment$2) => {
-    var segment = $as_LMain$Point(segment$2);
-    segment.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V($m_LMain$().LMain$__f_ctx, "#F9849A")
-  }))(this);
-  var len = xs.u.length;
-  var i = 0;
-  if ((xs !== null)) {
-    while ((i < len)) {
-      var arg1 = xs.get(i);
-      f(arg1);
-      i = ((1 + i) | 0)
-    }
-  } else if ((xs instanceof $ac_I)) {
-    var x3 = $asArrayOf_I(xs, 1);
-    while ((i < len)) {
-      var arg1$1 = x3.get(i);
-      f(arg1$1);
-      i = ((1 + i) | 0)
-    }
-  } else if ((xs instanceof $ac_D)) {
-    var x4 = $asArrayOf_D(xs, 1);
-    while ((i < len)) {
-      var arg1$2 = x4.get(i);
-      f(arg1$2);
-      i = ((1 + i) | 0)
-    }
-  } else if ((xs instanceof $ac_J)) {
-    var x5 = $asArrayOf_J(xs, 1);
-    while ((i < len)) {
-      var t = x5.get(i);
-      var lo = t.RTLong__f_lo;
-      var hi = t.RTLong__f_hi;
-      f(new $c_RTLong(lo, hi));
-      i = ((1 + i) | 0)
-    }
-  } else if ((xs instanceof $ac_F)) {
-    var x6 = $asArrayOf_F(xs, 1);
-    while ((i < len)) {
-      var arg1$3 = x6.get(i);
-      f(arg1$3);
-      i = ((1 + i) | 0)
-    }
-  } else if ((xs instanceof $ac_C)) {
-    var x7 = $asArrayOf_C(xs, 1);
-    while ((i < len)) {
-      var arg1$4 = x7.get(i);
-      f($bC(arg1$4));
-      i = ((1 + i) | 0)
-    }
-  } else if ((xs instanceof $ac_B)) {
-    var x8 = $asArrayOf_B(xs, 1);
-    while ((i < len)) {
-      var arg1$5 = x8.get(i);
-      f(arg1$5);
-      i = ((1 + i) | 0)
-    }
-  } else if ((xs instanceof $ac_S)) {
-    var x9 = $asArrayOf_S(xs, 1);
-    while ((i < len)) {
-      var arg1$6 = x9.get(i);
-      f(arg1$6);
-      i = ((1 + i) | 0)
-    }
-  } else if ((xs instanceof $ac_Z)) {
-    var x10 = $asArrayOf_Z(xs, 1);
-    while ((i < len)) {
-      var arg1$7 = x10.get(i);
-      f(arg1$7);
-      i = ((1 + i) | 0)
-    }
-  } else {
-    throw new $c_s_MatchError(xs)
+  if ((!this.LMain$__f_gameOver)) {
+    this.LMain$__f_rabbit.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#739A8B")
   };
-  if (this.LMain$__f_aiming) {
-    var newPoint = $as_LMain$Point(this.LMain$__f_getAimingPoint.apply__O());
-    newPoint.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V(this.LMain$__f_ctx, "#E4AB91")
+  if (((!this.LMain$__f_gameOver) || (this.LMain$__f_score > 0))) {
+    var xs = this.LMain$__f_segments;
+    var f = ((this$3) => ((segment$2) => {
+      var segment = $as_LMain$Point(segment$2);
+      segment.draw__Lorg_scalajs_dom_raw_CanvasRenderingContext2D__T__V($m_LMain$().LMain$__f_ctx, "#F9849A")
+    }))(this);
+    var len = xs.u.length;
+    var i = 0;
+    if ((xs !== null)) {
+      while ((i < len)) {
+        var arg1 = xs.get(i);
+        f(arg1);
+        i = ((1 + i) | 0)
+      }
+    } else if ((xs instanceof $ac_I)) {
+      var x3 = $asArrayOf_I(xs, 1);
+      while ((i < len)) {
+        var arg1$1 = x3.get(i);
+        f(arg1$1);
+        i = ((1 + i) | 0)
+      }
+    } else if ((xs instanceof $ac_D)) {
+      var x4 = $asArrayOf_D(xs, 1);
+      while ((i < len)) {
+        var arg1$2 = x4.get(i);
+        f(arg1$2);
+        i = ((1 + i) | 0)
+      }
+    } else if ((xs instanceof $ac_J)) {
+      var x5 = $asArrayOf_J(xs, 1);
+      while ((i < len)) {
+        var t = x5.get(i);
+        var lo = t.RTLong__f_lo;
+        var hi = t.RTLong__f_hi;
+        f(new $c_RTLong(lo, hi));
+        i = ((1 + i) | 0)
+      }
+    } else if ((xs instanceof $ac_F)) {
+      var x6 = $asArrayOf_F(xs, 1);
+      while ((i < len)) {
+        var arg1$3 = x6.get(i);
+        f(arg1$3);
+        i = ((1 + i) | 0)
+      }
+    } else if ((xs instanceof $ac_C)) {
+      var x7 = $asArrayOf_C(xs, 1);
+      while ((i < len)) {
+        var arg1$4 = x7.get(i);
+        f($bC(arg1$4));
+        i = ((1 + i) | 0)
+      }
+    } else if ((xs instanceof $ac_B)) {
+      var x8 = $asArrayOf_B(xs, 1);
+      while ((i < len)) {
+        var arg1$5 = x8.get(i);
+        f(arg1$5);
+        i = ((1 + i) | 0)
+      }
+    } else if ((xs instanceof $ac_S)) {
+      var x9 = $asArrayOf_S(xs, 1);
+      while ((i < len)) {
+        var arg1$6 = x9.get(i);
+        f(arg1$6);
+        i = ((1 + i) | 0)
+      }
+    } else if ((xs instanceof $ac_Z)) {
+      var x10 = $asArrayOf_Z(xs, 1);
+      while ((i < len)) {
+        var arg1$7 = x10.get(i);
+        f(arg1$7);
+        i = ((1 + i) | 0)
+      }
+    } else {
+      throw new $c_s_MatchError(xs)
+    };
+    this.drawEyes__V()
+  };
+  if (this.LMain$__f_gameOver) {
+    this.LMain$__f_ctx.font = "30px Arial";
+    this.LMain$__f_ctx.fillStyle = "black";
+    var qual$1 = this.LMain$__f_ctx;
+    qual$1.fillText("Touch to start the game", 10.0, 72.0);
+    var qual$2 = this.LMain$__f_ctx;
+    qual$2.fillText("Slide to control the snake", 10.0, 114.0);
+    if ((this.LMain$__f_score > 0)) {
+      var qual$3 = this.LMain$__f_ctx;
+      qual$3.fillText("Game over!", 150.0, 30.0)
+    }
   };
   this.LMain$__f_ctx.font = "30px Arial";
   this.LMain$__f_ctx.fillStyle = "black";
-  var qual$1 = this.LMain$__f_ctx;
-  var this$6 = this.LMain$__f_score;
-  var x$1 = ("Score: " + ("" + this$6));
-  qual$1.fillText(x$1, 10.0, 30.0)
+  var qual$4 = this.LMain$__f_ctx;
+  var this$7 = this.LMain$__f_score;
+  var x$13 = ("Score: " + ("" + this$7));
+  qual$4.fillText(x$13, 10.0, 30.0)
 });
 $c_LMain$.prototype.newGame__F0 = (function() {
   return new $c_sjsr_AnonFunction0(((this$1) => (() => {
@@ -4469,7 +4546,8 @@ $c_LMain$.prototype.Main$$$anonfun$createCanvas$3__Lorg_scalajs_dom_raw_MouseEve
   return false
 });
 $c_LMain$.prototype.Main$$$anonfun$createCanvas$4__Lorg_scalajs_dom_raw_MouseEvent__Z = (function(e) {
-  $m_LMain$().LMain$__f_aiming = false;
+  var this$1 = $m_LMain$().onMouseUp__F0();
+  this$1.apply__O();
   e.preventDefault();
   return false
 });
@@ -4489,7 +4567,8 @@ $c_LMain$.prototype.Main$$$anonfun$createCanvas$6__Lorg_scalajs_dom_raw_TouchEve
   return false
 });
 $c_LMain$.prototype.Main$$$anonfun$createCanvas$7__Lorg_scalajs_dom_raw_TouchEvent__Z = (function(e0) {
-  $m_LMain$().LMain$__f_aiming = false;
+  var this$1 = $m_LMain$().onMouseUp__F0();
+  this$1.apply__O();
   e0.preventDefault();
   return false
 });
@@ -4507,6 +4586,9 @@ $c_LMain$.prototype.delayedEndpoint$Main$1__V = (function() {
   this.LMain$__f_rnd = $ct_s_util_Random__(new $c_s_util_Random());
   this.LMain$__f_updateTime = this.LMain$__f_INITIAL_SPEED;
   this.LMain$__f_score = 0;
+  this.LMain$__f_swipeX = 0;
+  this.LMain$__f_swipeY = 0;
+  this.LMain$__f_gameOver = true;
   this.LMain$__f_checkGameOver = new $c_sjsr_AnonFunction1(((this$1) => ((newPoint$2) => {
     var newPoint = $as_LMain$Point(newPoint$2);
     return (((((newPoint.LMain$Point__f_x < 0) || (newPoint.LMain$Point__f_y < 0)) || (newPoint.LMain$Point__f_x > (((-1) + $m_LMain$().LMain$__f_COLS) | 0))) || (newPoint.LMain$Point__f_y > (((-1) + $m_LMain$().LMain$__f_ROWS) | 0))) || (!$m_LMain$().isFree__I__I__Z(newPoint.LMain$Point__f_x, newPoint.LMain$Point__f_y)))
