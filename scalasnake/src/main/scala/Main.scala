@@ -34,15 +34,13 @@ object Main extends App {
   val rnd = new Random()
   var updateTime = INITIAL_SPEED
   var score = 0
+  // Coordinates where mouse swipe has started
+  var swipeX = 0
+  var swipeY = 0
 
   def dirFromTouch(x: Int, y: Int): Int = {
-    val head = segments(0)
-    val rowWidth = canvas.width/COLS
-    val rowHeight = canvas.height/ROWS
-    val sx = rowWidth*(head.x + 0.5).toInt
-    val sy = rowHeight*(head.y + .5).toInt
-    val dx = sx - x
-    val dy = sy - y
+    val dx = swipeX - x
+    val dy = swipeY - y
 
     if (dx.abs > dy.abs) {
       if (dx > 0) {
@@ -61,8 +59,10 @@ object Main extends App {
 
   def onPress = (x: Int, y: Int) => {
     aiming = true
-    dir = dirFromTouch(x, y)
     render()
+    swipeX = x
+    swipeY = y
+    dir = dirFromTouch(x, y)
   }
 
   def createCanvas = () => {
