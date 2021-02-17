@@ -247,14 +247,6 @@ object Main extends App {
       drawEyes()
     }
 
-    if (!gameOver) {
-      // Draw aiming point
-      if (aiming) {
-        var newPoint: Point = getAimingPoint()
-        newPoint.draw(ctx, "#E4AB91")
-      }
-    }
-    
     if (gameOver) {
       ctx.font = "30px Arial";
       ctx.fillStyle = "black";
