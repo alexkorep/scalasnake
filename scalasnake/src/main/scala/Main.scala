@@ -201,12 +201,16 @@ object Main extends App {
     if (!gameOver) {
       // Draw the rabbit
       rabbit.draw(ctx, "#739A8B")
+    }
 
+    if (!gameOver || score > 0) {
       // Draw the snake
       for (segment <- segments) {
         segment.draw(ctx, "#F9849A")
       }
+    }
 
+    if (!gameOver) {
       // Draw aiming point
       if (aiming) {
         var newPoint: Point = getAimingPoint()
@@ -218,6 +222,7 @@ object Main extends App {
       ctx.font = "30px Arial";
       ctx.fillStyle = "black";
       ctx.fillText("Touch to start the game", 10, 72);
+      ctx.fillText("Slide to control the snake", 10, 114);
       if (score > 0) {
         ctx.fillText("Game over!", 150, 30);
       }
